@@ -8,7 +8,7 @@ const Leader = () => {
     console.log(leaderboard); // Log the leaderboard to see what it is
 
     useEffect(() => {
-        axios.get('/api/leaderboard')
+        axios.get('http://localhost:5002/api/leaderboard')
             .then(response => {
                 setLeaderboard(response.data);
             })
@@ -17,24 +17,23 @@ const Leader = () => {
                 console.error('There was an error fetching the leaderboard!', error);
             });
     }, []);
-
-    {/* Render leaderboard data if available */}
-    <div>
-    {Array.isArray(leaderboard) && leaderboard.length > 0 ? (
-        <ul>
-            {leaderboard.map((entry, index) => (
-                <li key={index}>
-                    {entry.username}: {entry.wpm} WPM
-                </li>
-            ))}
-        </ul>
-    ) : (
-        <p>No leaderboard data available</p>
-    )}
-</div>
-{/* Display error if exists */}
-{error && <div className="error">{error}</div>}
-
+    
+    return (
+        <div>
+            {error && <div className="error">{error}</div>}
+            {Array.isArray(leaderboard) && leaderboard.length > 0 ? (
+                <ul>
+                    {leaderboard.map((entry, index) => (
+                        <li key={index}>
+                            {entry.username}: {entry.wpm} WPM
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No leaderboard data available</p>
+            )}
+        </div>
+    );
 }
 
 

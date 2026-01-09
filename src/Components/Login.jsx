@@ -22,7 +22,11 @@ const Login = () => {
             });
             if (response.ok) {
                 const data = await response.json();
-                // Save the token (you can store it in localStorage or state if needed)
+                // Save auth info for later API calls
+                if (data?.token) {
+                    localStorage.setItem('token', data.token);
+                }
+                localStorage.setItem('username', username);
                 console.log("Login successful:", data);
                 // Redirect to the home page after successful login
                 navigate("/home");

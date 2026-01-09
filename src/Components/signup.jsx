@@ -14,7 +14,7 @@ const Signup = () => {
         const credentials = { username, password };
         console.log(credentials);
         try {
-            const response = await fetch("http://localhost:5002/signup", {
+            const response = await fetch("http://localhost:5002/register", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -22,13 +22,12 @@ const Signup = () => {
                 body: JSON.stringify(credentials),
             });
             if (response.ok) {
-                const data = await response.json();
-                // Handle successful signup
-                console.log("Signup successful:", data);
+                const message = await response.text();
+                console.log("Signup successful:", message);
                 navigate("/login");
             } else {
                 const error = await response.text();
-                setSignupError(error);
+                setSignupError(error || "Signup failed");
             }
         } catch (error) {
             setSignupError("Server error");

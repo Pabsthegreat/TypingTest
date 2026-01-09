@@ -59,8 +59,21 @@ app.post('/login', async (req, res) => {
 });
 
 app.post('/results', async (req, res) => {
-  const { userId, wpm, mistakes, accuracy } = req.body;
+  const { username, wpm, mistakes, accuracy } = req.body;
+
+  if (!username) {
+    return res.status(400).send('Username is required');
+  }
+
   try {
+    const user = await User.findOne({ username });
+
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const userId = user._id;
+
     let result = await Result.findOne({ userId });
     if (!result) {
       result = new Result({ userId, tests: [{ wpm, mistakes, accuracy }] });
@@ -70,6 +83,7 @@ app.post('/results', async (req, res) => {
     await result.save();
     res.status(201).send(result);
   } catch (error) {
+    console.error('Error saving results:', error);
     res.status(400).send('Error saving results');
   }
 });

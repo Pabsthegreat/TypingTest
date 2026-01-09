@@ -14,8 +14,35 @@ const Results = () => {
     return () => {document.body.className = '';};
     }, []);
 
-  const saveGame = () => {
-    navigate('leader');
+  const saveGame = async () => {
+    const username = localStorage.getItem('username');
+
+    if (!username) {
+      alert('You need to be logged in to save your result.');
+      navigate('/login');
+      return;
+    }
+
+    try {
+      const response = await fetch('http://localhost:5002/results', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, wpm, mistakes, accuracy }),
+      });
+
+      if (response.ok) {
+        navigate('/home/leader');
+      } else {
+        const text = await response.text();
+        console.error('Error saving result:', text);
+        alert('Failed to save result to leaderboard.');
+      }
+    } catch (error) {
+      console.error('Error saving result:', error);
+      alert('Server error while saving result.');
+    }
   }
 
   return (
